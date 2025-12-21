@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+
+#Must use all chars of input, only changes order
+
+import math
+import sys
+
+def uniq_permutations(n):
+    permutations = []
+
+    stack = [ ([], [i for i in range(n)]) ]
+    while len(stack) > 0:
+        usedArray, unusedSet = stack.pop(0)
+        if len(usedArray) == n: permutations.append(usedArray)
+        else:
+            for nextIndex in unusedSet:
+                newArray = usedArray.copy()
+                newArray.append(nextIndex)
+                newSet = unusedSet.copy()
+                newSet.remove(nextIndex)
+                stack.append((newArray, newSet))
+
+    if (len(permutations) != math.factorial(n)): raise Exception("Did not generate permutation list correctly")
+    return permutations
+
+def gen_permutations(x):
+    permutations = uniq_permutations(len(x))
+    return set([(''.join([x[i] for i in permutation])) for permutation in permutations])
+
+if __name__ == "__main__":
+    for word in sys.stdin:
+        word = word.strip()
+        if len(word) == 0: continue
+        for variation in gen_permutations(word):
+            print(variation)

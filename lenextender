@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+def allocate_slots(n, k):
+    #All ways to allocate k items to n slots
+    #Example: n=3, k=4: [[3, 0, 0, 0], [2, 1, 0, 0], [2, 0, 1, 0], ..., [1, 1, 1, 0], [0, 1, 1, 1], ..., [0, 0, 0, 3]]
+    if (n <= 0): return []
+    if (n == 1): return [k]
+
+    results = []
+
+    sums = get_sums(k)
+    if (len(sums) == 0): return results
+
+    sumByLength = {}
+    min_len = math.nan
+    max_len = 0
+    for sum in sums: #map sums by length
+        l = len(sum)
+        min_len = min(l, min_len)
+        max_len = max(l, max_len)
+
+        if l in sumByLength: sumByLength[l].append(sum)
+        else: sumByLength[l] = [sum]
+    
+    print("min = %s, max = %s" % (min_len, max_len))
+
+    return results
+
+def get_combinations(n, k):
+    # N choose K. For n=3, k=2, returns {(1, 0, 1), (1, 1, 0), (0, 1, 1)}
+    if (n < k): return {}
+
+    results = []
+    range_min = (2**k)-1
+    range_max = range_min*(2**(n-k))
+    for i in range(range_min, range_max+1):
+        if (count_bits(i) == k):
+            #get bits of i
+            bits = []
+            mask = 1
+            for j in range(n):
+                if ((i & mask) > 0): bits.append(1)
+                else: bits.append(0)
+                mask *= 2
+            results.append(tuple(reversed(bits)))
+
+    return results
+
+def count_bits(n):
+    n = n - ((n >> 1) & 0x55555555)
+    n = (n & 0x33333333) + ((n >> 2) & 0x33333333)
+    n = (n + (n >> 4)) & 0x0F0F0F0F
+    n = n + (n >> 8)
+    n = n + (n >> 16)
+    return n & 0x3F
+
+def get_sums(n):
+    #Ex. for n=3, returns {(1, 2), (1, 1, 1), (3,), (2, 1)}. Not considering sums as commutative here because sum order is needed later
+    sumData = {1: [1]}
+
+    for i in range(2, n+1):
+        sums = set([(i,)])
+        for j in range(1, i):
+            sums.add((i-j, j))
+            if (i-j > 1):
+                for subSum in sumData[i-j]:
+                    subSumCopy = list(subSum)
+                    subSumCopy.append(j)
+                    sums.add(tuple(subSumCopy))
+            if (j > 1):
+                for subSum in sumData[j]:
+                    subSumCopy = list(subSum)
+                    subSumCopy.insert(0, i-j)
+                    sums.add(tuple(subSumCopy))
+        sumData[i] = sums
+    
+    return sumData[n]
+
+
+def gen_extended_length(x: str, newLen: int):
+    if (len(x) >= newLen): print(x)
+    else:
+        for allocation in allocate_slots(newLen, newLen - len(x)):
+            print(allocation)
+        pass
+
+if __name__ == "__main__":
+    strLen = -1
+    if (len(sys.argv) >= 2):
+        try: strLen = int(sys.argv[1])
+        except: raise Exception("Must pass in number for length as first argument")
+
+    for word in sys.stdin:
+        word = word.strip()
+        gen_extended_length(word, math.ceil(len(word)*1.2) if strLen == -1 else strLen)

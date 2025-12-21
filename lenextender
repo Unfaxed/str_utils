@@ -25,8 +25,19 @@ def allocate_slots(n, k):
         if l in sumByLength: sumByLength[l].append(sum)
         else: sumByLength[l] = [sum]
     
-    print("min = %s, max = %s" % (min_len, max_len))
-
+    for i in range(min_len, max_len+1):
+        sumsForLen = sumByLength[i]
+        for combinationTuple in get_combinations(n, i):
+            for sum in sumsForLen:
+                combination = list(combinationTuple)
+                sumIndex = 0
+                for j in range(len(combination)):
+                    if (combination[j] == 1): 
+                        combination[j] = sum[sumIndex]
+                        sumIndex += 1
+                if (sumIndex < len(sum)): raise Exception("Combination did not have correct number of ones for sum components")
+                results.append(combination)
+            
     return results
 
 def get_combinations(n, k):
@@ -35,7 +46,7 @@ def get_combinations(n, k):
 
     results = []
     range_min = (2**k)-1
-    range_max = range_min*(2**(n-k))
+    range_max = range_min*(2**(n-k)) #TODO: can check if k < n-k, do bitwise inverse of result
     for i in range(range_min, range_max+1):
         if (count_bits(i) == k):
             #get bits of i
@@ -81,11 +92,26 @@ def get_sums(n):
 
 
 def gen_extended_length(x: str, newLen: int):
-    if (len(x) >= newLen): print(x)
+    if (len(x) >= newLen): return [x]
     else:
-        for allocation in allocate_slots(newLen, newLen - len(x)):
-            print(allocation)
-        pass
+        results = set()
+        for allocation in allocate_slots(len(x), newLen):
+            result = ''
+            contains_zero = False
+            for i, val in enumerate(allocation):
+                if (val == 0): 
+                    contains_zero = True
+                    break
+                result += x[i]*val
+            if (contains_zero): continue
+            results.add(result)
+        return results
+
+def uniq_chars(word: str):
+    chars = set()
+    for i in word:
+        chars.add(i)
+    return ''.join(list(chars))
 
 if __name__ == "__main__":
     strLen = -1
@@ -95,4 +121,5 @@ if __name__ == "__main__":
 
     for word in sys.stdin:
         word = word.strip()
-        gen_extended_length(word, math.ceil(len(word)*1.2) if strLen == -1 else strLen)
+        for extWord in gen_extended_length(word, math.ceil(len(word)*1.2) if strLen == -1 else strLen):
+            print(extWord)

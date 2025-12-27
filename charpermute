@@ -21,6 +21,7 @@ for num, letterList in varmapNumbers.items():
         varmap[letter] = varmapNumbers[num]
 
 def gen_variations(s: str, varmap: dict):
+    print(s)
     variations = set([s])
 
     for i in range(len(s)):
@@ -33,13 +34,17 @@ def gen_variations(s: str, varmap: dict):
                 variationStub = variationStub[:i] + subLetter + variationStub[(i+1):]
                 letterVariations.append(variationStub)
 
+        for variation in letterVariations:
+            if not variation in variations:
+                print(variation)
         variations.update(letterVariations)
 
     return variations
 
 if __name__ == "__main__":
+    for word in sys.argv[1:]:
+        gen_variations(word, varmap)
     for word in sys.stdin:
         word = word.strip()
         if len(word) == 0: continue
-        for variation in gen_variations(word, varmap):
-            print(variation)
+        gen_variations(word, varmap)

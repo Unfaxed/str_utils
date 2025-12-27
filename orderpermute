@@ -4,6 +4,8 @@
 
 import math
 import sys
+import random
+import utils
 
 def uniq_permutations(n):
     permutations = []
@@ -23,13 +25,46 @@ def uniq_permutations(n):
     if (len(permutations) != math.factorial(n)): raise Exception("Did not generate permutation list correctly")
     return permutations
 
-def gen_permutations(x):
-    permutations = uniq_permutations(len(x))
-    return set([(''.join([x[i] for i in permutation])) for permutation in permutations])
+def rand_permute(n):
+    choices = set([i for i in range(n)])
+    permutation = []
+    for i in range(n):
+        choice = random.choice(tuple(choices))
+        choices.remove(choice)
+        permutation.append(choice)
+    return permutation
+
+
+def gen_permutations(x, prob=False, det=True):
+    wordGen = lambda permutation: ''.join([x[i] for i in permutation])
+
+    if not det and not prob and (len(x) >= 9): prob = True #problem grows O(n!), better for piping
+
+    if (prob):
+        generated = set([])
+        for i in range(math.factorial(len(x))):
+            permutation = rand_permute(len(x))
+            permWord = wordGen(permutation)
+            if not permWord in generated:
+                generated.add(permWord)
+                print(permWord)
+    else:
+        permutations = uniq_permutations(len(x))
+        words = set([wordGen(permutation) for permutation in permutations])
+        for word in words: print(word)
+        return words
 
 if __name__ == "__main__":
-    for word in sys.stdin:
-        word = word.strip()
-        if len(word) == 0: continue
-        for variation in gen_permutations(word):
-            print(variation)
+    flags, vals, mainArgs = utils.getFlags(sys.argv[1:])
+
+    prob = ('p' in flags) or ('prob' in flags) or ('probalistic' in flags)
+    det = ('d' in flags) or ('det' in flags) or ('deterministic' in flags)
+
+    if len(mainArgs) == 0:
+        for word in sys.stdin:
+            word = word.strip()
+            if len(word) == 0: continue
+            gen_permutations(word, prob=prob, det=det)
+    else:
+        for word in mainArgs:
+            gen_permutations(word.strip(), prob=prob, det=det)

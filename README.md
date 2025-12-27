@@ -8,8 +8,9 @@
 **ngram.py**: Given a file passed in after `--file` argument (by default, uses `/usr/share/dict/words`), and a value for N (by default 3, first argument), extracts all N-grams out of the word file, then sorts each input word by how many N-grams it contains.
 
 Additional parameters:
-- `-c`/`--show-count`: Show the number of n-grams each word contains in the output
-- `-k`/`--no-sort`: Do not sort the output, and only count the number of n-grams in each input word (implies `-c`)
+- `-c`, `--show-count`: Show the number of n-grams each word contains in the output
+- `-k`, `--no-sort`: Do not sort the output, and only count the number of n-grams in each input word (implies `-c`)
+- `--min <number>`: Set a filter for the minimum threshold of N-grams to include in the output
 
 **orderpermute.py**: Lists all permutations of the characters passed in as input
 
@@ -30,3 +31,13 @@ echo "7625" | ./charpermute.py --use phonekey_numbers | ./ngram.py 3 --min 2
 ```
 
 Explanation: If the keys pressed on an old flip-phone were 7, 6, 2, and 5, given the keypad mappings, the possible words include "rock", "soak", and "sock"
+
+### Example 3: Guess the other possible letters for a phone number
+
+Given something like 1-800-GOT-MILK, what other words could be created from it?
+
+```
+./charpermute.py "gotmilk" --use phonekeys | ./ngram.py 5 | less
+```
+
+One of the top alternative spellings of the phone number is 1-800-HOT-OILL

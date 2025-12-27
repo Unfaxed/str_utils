@@ -38,16 +38,24 @@ def rand_permute(n):
 def gen_permutations(x, prob=False, det=True):
     wordGen = lambda permutation: ''.join([x[i] for i in permutation])
 
-    if not det and not prob and (len(x) >= 9): prob = True #problem grows O(n!), better for piping
+    largeInput = len(x) >= 9
+    if not det and not prob and largeInput: prob = True #problem grows O(n!), better for piping
 
     if (prob):
-        generated = set([])
-        for i in range(math.factorial(len(x))):
+        generated = set()
+        nTries = math.factorial(len(x))
+        failThreshold = 0.01*nTries
+        fails = 0
+        for i in range(nTries):
             permutation = rand_permute(len(x))
             permWord = wordGen(permutation)
-            if not permWord in generated:
-                generated.add(permWord)
+            if permWord in generated:
+                fails += 1
+                if (largeInput and fails >= failThreshold): break
+            else:
                 print(permWord)
+                generated.add(permWord)
+                fails = 0
     else:
         permutations = uniq_permutations(len(x))
         words = set([wordGen(permutation) for permutation in permutations])

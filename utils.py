@@ -9,9 +9,9 @@ def getArgFlag(arg: str):
     return arg[2:] if arg.startswith('--') else arg[1:]
 
 def getFlags(args):
-    mainArgs = []
     flags = set()
     vals = {}
+    mainArgs = []
 
     prevWasArg = False
     for i, arg in enumerate(args):

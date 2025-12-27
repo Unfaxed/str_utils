@@ -2,9 +2,10 @@
 
 import sys
 import math
+import utils
 
 def allocate_slots(n, k):
-    #All ways to allocate k items to n slots
+    #All ways to allocate k items to n slots with no zeros
     #Example: n=2, k=5: [(3, 2), (1, 4), (2, 3), (4, 1)]
     if (n <= 0): return []
     if (n == 1): return [(k,)]
@@ -53,16 +54,21 @@ def gen_extended_length(x: str, newLen: int):
                     break
                 result += x[i]*val
             if (contains_zero): continue
+            print(result)
             results.add(result)
         return results
 
 if __name__ == "__main__":
-    strLen = -1
-    if (len(sys.argv) >= 2):
-        try: strLen = int(sys.argv[1])
-        except: raise Exception("Must pass in number for length as first argument")
+    flags, vals, mainArgs = utils.getFlags(sys.argv[1:])
 
-    for word in sys.stdin:
+    strLen = -1
+    if (len(mainArgs) > 0):
+        try: strLen = int(sys.argv[1])
+        except: pass
+    if (strLen == -1): raise Exception("Must pass in a value for output length as first argument")
+    
+    words = mainArgs[1:] if len(mainArgs) > 1 else sys.stdin
+
+    for word in words:
         word = word.strip()
-        for extWord in gen_extended_length(word, math.ceil(len(word)*1.2) if strLen == -1 else strLen):
-            print(extWord)
+        gen_extended_length(word, math.ceil(len(word)*1.2) if strLen == -1 else strLen)

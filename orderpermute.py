@@ -65,7 +65,7 @@ def gen_permutations(x, prob=False, det=True):
 if __name__ == "__main__":
     flags, vals, mainArgs = utils.getFlags(sys.argv[1:])
 
-    prob = ('p' in flags) or ('prob' in flags) or ('probalistic' in flags)
+    prob = ('p' in flags) or ('prob' in flags) or ('probabilistic' in flags)
     det = ('d' in flags) or ('det' in flags) or ('deterministic' in flags)
 
     if len(mainArgs) == 0:

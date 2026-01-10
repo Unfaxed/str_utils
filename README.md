@@ -8,11 +8,17 @@
 **ngram.py**: Given a file passed in after `--file` argument (by default, uses `/usr/share/dict/words`), and a value for N (by default 3, first argument), extracts all N-grams out of the word file, then sorts each input word by how many N-grams it contains.
 
 Additional parameters:
-- `-c`, `--show-count`: Show the number of n-grams each word contains in the output
-- `-k`, `--no-sort`: Do not sort the output, and only count the number of n-grams in each input word (implies `-c`)
+- `-c`, `--show-count`: Show the number of N-grams each word contains in the output
+- `-k`, `--no-sort`: Do not sort the output, and only count the number of N-grams in each input word (implies `-c`)
+- `-u`, `--uniform`: Give each N-gram a uniform weighting. By default, a word is ranked by how frequently each N-gram is found in the words file.
+- `--file <name>`: Path of the words file to use
 - `--min <number>`: Set a filter for the minimum threshold of N-grams to include in the output
 
 **orderpermute.py**: Lists all permutations of the characters passed in as input
+ 
+Additioal parameters:
+- `-d`, `--deterministic`: Use only deterministic permutation (default for small input words)
+- `-p`, `--probabilistic`: Approximate output using only probabilistic permutation (default for large input words)
 
 <hr>
 

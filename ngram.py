@@ -3,8 +3,8 @@
 import sys
 import utils
 
-def load_ngrams(fileName, N):
-    ngrams = set()
+def load_ngrams(fileName, N, count=True):
+    ngrams = {}
 
     file = open(fileName, 'r')
 
@@ -12,7 +12,9 @@ def load_ngrams(fileName, N):
         line = line.strip().lower()
         if (len(line) < N or "'" in line): continue
         for i in range(len(line) - N + 1):
-            ngrams.add(line[i:(i+N)])
+            ngram = line[i:(i+N)]
+            if count and (ngram in ngrams): ngrams[ngram] += 1
+            else: ngrams[ngram] = 1
 
     file.close()
 
@@ -22,7 +24,7 @@ def count_ngrams(word, ngrams, N):
     ngramCount = 0
     for i in range(len(word) - N + 1):
         ngram = word[i:(i+N)]
-        if ngram in ngrams: ngramCount += 1
+        if ngram in ngrams: ngramCount += ngrams[ngram]
     return ngramCount
 
 def rank_ngrams(words, ngrams, showCount=False, threshold=0):
@@ -57,6 +59,7 @@ if __name__ == "__main__":
 
     showCount = ('c' in flags) or ('show-count' in flags)
     doSort = not (('k' in flags) or ('no-sort' in flags) or ('skip-sort' in flags)) #implies showCount
+    uniform = ('u' in flags) or ('uniform' in flags)
 
     threshold = 0
     if ('min' in vals):
@@ -65,7 +68,7 @@ if __name__ == "__main__":
         except: 
             raise Exception("Could not parse --min parameter")
 
-    ngrams = load_ngrams(fileName=fileName, N=N)
+    ngrams = load_ngrams(fileName=fileName, N=N, count=(not uniform))
 
     if (doSort):
         words = set()

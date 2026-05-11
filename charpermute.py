@@ -6,7 +6,7 @@ import string
 
 #The output list size is >= the input size
 
-def get_phonekeys_numbers(): #Example: 1-800-468-2333 -> 1-800-GOT-BEEF
+def get_phonekeys_numbers_map(): #Example: 1-800-468-2333 -> 1-800-GOT-BEEF
     varmapNumbers = {
         '2': ['a', 'b', 'c'],
         '3': ['d', 'e', 'f'],
@@ -25,8 +25,8 @@ def get_phonekeys_numbers(): #Example: 1-800-468-2333 -> 1-800-GOT-BEEF
 
     return varmapNumbers
 
-def get_phonekeys():
-    varmap = get_phonekeys_numbers()
+def get_phonekeys_map():
+    varmap = get_phonekeys_numbers_map()
     for key, val in varmap.copy().items():
         for letter in val: 
             letters = val.copy()
@@ -34,15 +34,15 @@ def get_phonekeys():
             varmap[letter] = letters
     return varmap
 
-def get_shiftkeys():
+def get_shiftkeys_map():
     varmap = {}
     for char in string.ascii_lowercase: 
         varmap[char] = [char, char.upper()]
         varmap[char.upper()] = [char, char.upper()]
     return varmap
 
-def gen_variations(s: str, varmap: dict):
-    print(s)
+def gen_variations(s: str, varmap: dict, verbose: bool = True):
+    if (verbose): print(s)
     variations = set([s])
 
     for i in range(len(s)):
@@ -56,7 +56,7 @@ def gen_variations(s: str, varmap: dict):
                 letterVariations.append(variationStub)
 
         for variation in letterVariations:
-            if not variation in variations:
+            if verbose and not variation in variations:
                 print(variation)
         variations.update(letterVariations)
 
@@ -68,11 +68,11 @@ if __name__ == "__main__":
     varmap = None
     if ('use' in vals):
         use = vals['use'].strip().lower()
-        if (use == 'phonekeys'): varmap = get_phonekeys()
-        elif (use == 'phonekey_numbers'): varmap = get_phonekeys_numbers()
-        elif (use == 'shiftkeys'): varmap = get_shiftkeys()
+        if (use == 'phonekeys'): varmap = get_phonekeys_map()
+        elif (use == 'phonekey_numbers'): varmap = get_phonekeys_numbers_map()
+        elif (use == 'shiftkeys'): varmap = get_shiftkeys_map()
         else: raise Exception("Valid maps are: ['shiftkeys', 'phonekeys', 'phonekey_numbers']")
-    if varmap is None: varmap = get_shiftkeys()
+    if varmap is None: varmap = get_shiftkeys_map()
 
     for word in mainArgs:
         gen_variations(word, varmap)

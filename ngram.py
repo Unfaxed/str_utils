@@ -27,7 +27,7 @@ def count_ngrams(word, ngrams, N):
         if ngram in ngrams: ngramCount += ngrams[ngram]
     return ngramCount
 
-def rank_ngrams(words, ngrams, showCount=False, threshold=0):
+def rank_ngrams(words, ngrams, showCount=False, threshold=0, verbose=True):
     if len(ngrams) == 0: raise Exception("ngrams set is empty")
     first_item = next(iter(ngrams))
     N = len(first_item) #assuming all same length
@@ -40,8 +40,9 @@ def rank_ngrams(words, ngrams, showCount=False, threshold=0):
 
     for word in sorted_ranking:
         if (ngram_ranking[word] < threshold): continue
-        if showCount: print("%s: %s" % (word, ngram_ranking[word]))
-        else: print(word)
+        if (verbose):
+            if showCount: print("%s: %s" % (word, ngram_ranking[word]))
+            else: print(word)
 
 if __name__ == "__main__":
     flags, vals, mainArgs = utils.getFlags(sys.argv[1:])

@@ -1,9 +1,9 @@
 
 def isArgFlag(arg: str):
-    return (arg.startswith("--") and len(arg) > 2) or (arg.startswith("-") and len(arg) > 1)
+    return isArg2Flag(arg) or (arg.startswith("-") and len(arg) > 1 and ' ' not in arg)
 
 def isArg2Flag(arg: str):
-    return (arg.startswith("--") and len(arg) > 2)
+    return (arg.startswith("--") and len(arg) > 2 and not ' ' in arg)
 
 def getArgFlag(arg: str):
     return arg[2:] if arg.startswith('--') else arg[1:]

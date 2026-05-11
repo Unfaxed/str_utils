@@ -41,7 +41,7 @@ def get_sums(n):
     return sumData[n]
 
 
-def gen_extended_length(x: str, newLen: int):
+def gen_extended_length(x: str, newLen: int, verbose: bool = True):
     if (len(x) >= newLen): return [x]
     else:
         results = set()
@@ -54,7 +54,7 @@ def gen_extended_length(x: str, newLen: int):
                     break
                 result += x[i]*val
             if (contains_zero): continue
-            print(result)
+            if (verbose): print(result)
             results.add(result)
         return results
 

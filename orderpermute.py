@@ -35,7 +35,7 @@ def rand_permute(n):
     return permutation
 
 
-def gen_permutations(x, prob=False, det=True):
+def gen_permutations(x, prob=False, det=True, verbose=True):
     wordGen = lambda permutation: ''.join([x[i] for i in permutation])
 
     largeInput = len(x) >= 9
@@ -53,13 +53,14 @@ def gen_permutations(x, prob=False, det=True):
                 fails += 1
                 if (largeInput and fails >= failThreshold): break
             else:
-                print(permWord)
+                if (verbose): print(permWord)
                 generated.add(permWord)
                 fails = 0
     else:
         permutations = uniq_permutations(len(x))
         words = set([wordGen(permutation) for permutation in permutations])
-        for word in words: print(word)
+        if verbose:
+            for word in words: print(word)
         return words
 
 if __name__ == "__main__":
